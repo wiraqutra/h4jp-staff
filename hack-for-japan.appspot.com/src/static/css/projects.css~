@@ -1,0 +1,3 @@
+#projectDetailPage {
+    display: none;
+}

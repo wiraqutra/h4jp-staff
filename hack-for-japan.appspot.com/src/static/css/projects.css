@@ -1,0 +1,73 @@
+#projectDetailPage {
+    display: none;
+}
+#projectList > li {
+    float: left;
+    display: block;
+    width: 10em;
+    text-align: center;
+    border: 1px solid transparent;
+    padding: 8px;
+}
+#projectList > li:hover {
+    border: 1px solid #e8e8e8;
+    background-color: #fffafa;
+}
+.projectLink {
+    text-decoration: none;
+    color: #4f4f4f;
+    font-size: 14px;
+}
+.projectName {
+    font-weight: bold;
+    height: 2em;
+}
+.projectImage {
+    width: 120px;
+}
+.projectImageArea {
+    width: 100%;
+    height: 120px;
+    text-align: center;
+}
+.projectDescription {
+    height: 3em;
+}
+
+#projectDetailPage {
+    padding: 8px;
+    font-size: 14px;
+}
+
+#projectSummary {
+    display: table;
+}
+#projectImageArea {
+    display: table-cell;
+    width: 140px;
+    vertical-align: top;
+}
+#projectInfoArea {
+    display: table-cell;
+    vertical-align: top;
+}
+#projectInfoArea > div {
+    margin-bottom: 8px;
+}
+#projectDetailPage dt {
+    margin-top: 8px;
+    font-weight: bold;
+}
+#projectDetailPage dt:after {
+    content: ":";
+}
+#projectDetailPage dd {
+    margin-left: 20px;
+}
+#projectDetailPage .topLink {
+    font-size: 13px;
+}
+#projectDetailPage h1 {
+    font-size: 20px;
+    margin: 8px 0;
+}
