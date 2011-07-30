@@ -11,11 +11,13 @@
       <nav>
         <header id="projectListHeader">
           <h1>Hack F<span class="c-red">o</span>r Japanプロジェクト一覧</h1>
-          <select id="sort">
-            <option>ソート列を選択...</option>
-            <option value="status">活動状況</option>
-            <option value="lastModified">更新日時</option>
-          </select>
+          <div id="projectListSortBox">
+            <select id="sort">
+              <option>表示順を並び替える</option>
+              <option value="status">活動状況で並び替え</option>
+              <option value="lastModified">更新日時の新しい順</option>
+            </select>
+          </div>
         </header>
         <div id="projectListArea">
           <img src="images/throbber.gif">&nbsp;読み込み中...
@@ -52,8 +54,9 @@
     <script src="js/projects.html.js"></script>
     <script type="text/javascript" src="http://apis.google.com/js/plusone.js">{"parsetags": "explicit"}</script>
     <script id="projectListItemTemplate" type="text/x-jquery-tmpl">
-      <li>
+      <li class="dummy{{if status=='活動中'}} projectStatusActive{{/if}}{{if status=='活動停止中'}} projectStatusNonActive{{/if}}{{if status=='終了'}} projectStatusDead{{/if}}">
         <a class="projectLink" href="#project_${encodeURIComponent(name)}">
+          <div class="statuses">{{if status}}${status}{{/if}}</div>
           <div class="projectName">${truncate(name, 30)}</div>
           <div class="projectImageArea" align="center">
             <img src="${image}" class="projectImage">
@@ -65,9 +68,9 @@
       </li>
     </script>
     <script id="projectDetailPageTemplate" type="text/x-jquery-tmpl">
-      <header>
+      <header class="dummy{{if status=='活動中'}} projectStatusActive{{/if}}{{if status=='活動停止中'}} projectStatusNonActive{{/if}}{{if status=='終了'}} projectStatusDead{{/if}}">
         <a class="topLink" href="#">トップに戻る</a>
-        <h1>${name}</h1>
+        <h1 id="projectDetailHeaderTitle"><span>${name}</span></h1>
       </header>
       <div id="projectSummary">
         <div id="projectImageArea">
@@ -88,28 +91,42 @@
         </div>
       </div>
       <hr>
-      <dl>
-        <dt>リーダー</dt>
-        <dd>${leader}</dd>
-        <dt>参加メンバー</dt>
-        <dd>${members}</dd>
-        <dt>求められる技術/困っていること</dt>
-        <dd>${skills}</dd>
-        <dt>参加方法</dt>
-        <dd>${howToJoin}</dd>
-        <dt>ハッカソンを契機に開発を開始した場合はその会場名</dt>
-        <dd>${place}</dd>
-        <dt>moderatorへのリンク</dt>
-        <dd>${moderatorURL}</dd>
-        <dt>ライセンス</dt>
-        <dd>${license}</dd>
-        <dt>ディスカッション</dt>
-        <dd>${discussionURL}</dd>
-        <dt>更新日</dt>
-        <dd>${lastModified}</dd>
-        <dt>コメント</dt>
-        <dd>${comment}</dd>
-      </dl>
+      <table class="projectDetailTable">
+      <colgroup>
+        <col width="200" />
+        <col width="600" />
+      </colgroup>
+      {{if leader}}
+        <tr><th>リーダー</th><td>${leader}</td></tr>
+      {{/if}}
+      {{if members}}
+        <tr><th>参加メンバー</th><td>${members}</td></tr>
+      {{/if}}
+      {{if skills}}
+        <tr><th>求められる技術/困っていること</th><td>${skills}</td></tr>
+      {{/if}}
+      {{if howToJoin}}
+        <tr><th>参加方法</th><td>${howToJoin}</td></tr>
+      {{/if}}
+      {{if place}}
+        <tr><th>発祥ハッカソン</th><td>${place}</td></tr>
+      {{/if}}
+      {{if moderatorURL}}
+        <tr><th>moderatorへのリンク</th><td>${moderatorURL}</td></tr>
+      {{/if}}
+      {{if license}}
+        <tr><th>ライセンス</th><td>${license}</td></tr>
+      {{/if}}
+      {{if discussionURL}}
+        <tr><th>ディスカッション</th><td>${discussionURL}</td></tr>
+      {{/if}}
+      {{if lastModified}}
+        <tr><th>更新日</th><td>${lastModified}</td></tr>
+      {{/if}}
+      {{if comment}}
+        <tr><th>更新日</th><td>${comment}</td></tr>
+      {{/if}}
+      </table>
     </script>
   </body>
 </html>

@@ -4,6 +4,9 @@
 
 #projectDetailPage {
     display: none;
+    width: 800px;
+    margin: 0 auto;
+    padding: 50px 0 10px;
 }
 #projectList{
     padding:10px 0;
@@ -11,7 +14,7 @@
 #projectList > li {
     float: left;
     display: block;
-    width: 10em;
+    width: 205px;
     text-align: center;
     border: 1px solid transparent;
     padding: 8px;
@@ -26,14 +29,31 @@
     color: #4f4f4f;
     font-size: 14px;
 }
+.statuses{
+    padding: 5px 0;
+    color: #333;
+    font-weight: bold;
+    height: 1em;
+}
+.projectStatusActive .statuses{
+    color: #f00;
+}
+.projectStatusNonActive .statuses{
+    color: #6c0;
+}
+.projectStatusDead .statuses{
+    color: #369;
+}
 .projectName {
     font-weight: bold;
     height: 2.5em;
     line-height:1.4;
     padding:0 0 8px;
+    color: #222;
 }
 .projectImage {
-    width: 120px;
+    width: 118px;
+    border: 1px solid #aaa;
 }
 .projectImageArea {
     width: 100%;
@@ -43,11 +63,13 @@
 }
 .projectDescription {
     height: 3em;
-}
-
-#projectDetailPage {
-    padding: 8px;
-    font-size: 14px;
+    margin:8px 0 0;
+    padding:8px;
+    border: 1px solid #fcc;
+    background:#fff;
+    font-size:0.83em;
+    line-height:1.5;
+    text-align:left;
 }
 
 #projectSummary {
@@ -65,38 +87,91 @@
 #projectInfoArea > div {
     margin-bottom: 8px;
 }
-#projectDetailPage dt {
-    margin-top: 8px;
-    font-weight: bold;
+.projectDetailTable {
+    border: 1px solid #aaa;
+    border-collapse: collapse;
 }
-#projectDetailPage dt:after {
-    content: ":";
+.projectDetailTable th,.projectDetailTable td {
+    border: 1px solid #aaa;
+    padding: 5px;
+    text-align: left;
+    font-size: 1em;
+    line-height: 1.5;
 }
-#projectDetailPage dd {
-    margin-left: 20px;
+.projectDetailTable th {
+    background: #eee;
 }
 #projectDetailPage .topLink {
     font-size: 13px;
+    float: right;
+    text-decoration: none;
+    border: 1px solid #fcc;
+    background:#fff;
+    padding: 5px;
+    color: #36c;
 }
-#projectDetailPage h1 {
+#projectDetailPage .topLink:hover {
+    color: #c33;
+    text-decoration: underline;
+}
+#projectDetailHeaderTitle {
     font-size: 20px;
     margin: 8px 0;
+    clear: both;
+    padding: 5px 0 8px;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 2px solid #111;
+}
+#projectDetailHeaderTitle span {
+    border-left: 7px solid #111;
+    display: block;
+    padding: 3px 10px;
+}
+.projectStatusActive #projectDetailHeaderTitle {
+    border-bottom: 2px solid #f00;
+}
+.projectStatusActive #projectDetailHeaderTitle span {
+    border-left: 7px solid #f00;
+}
+.projectStatusNonActive #projectDetailHeaderTitle {
+    border-bottom: 2px solid #6c0;
+}
+.projectStatusNonActive #projectDetailHeaderTitle span {
+    border-left: 7px solid #6c0;
+}
+.projectStatusDead #projectDetailHeaderTitle {
+    border-bottom: 2px solid #369;
+}
+.projectStatusDead #projectDetailHeaderTitle span {
+    border-left: 7px solid #369;
 }
 
-
-#projectListArea{
+#projectListArea {
     margin:0 auto;
     max-width:900px;
     min-width:180px;
 }
-#projectListHeader{
+#projectListHeader {
     padding:15px 10px;
     background:#f6f6f6;
     border-bottom:2px solid #e6e6e6;
 }
-#projectListHeader h1{
+#projectListHeader h1 {
     margin:0 auto;
     max-width:900px;
     min-width:180px;
     font-size:1.5em;
+}
+#projectListSortBox {
+    margin:0 auto;
+    max-width:900px;
+    min-width:180px;
+    height: 1em;
+}
+#sort {
+    float: right;
+}
+#projectDescriptionArea {
+    line-height:1.5;
 }
