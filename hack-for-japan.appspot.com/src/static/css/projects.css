@@ -1,5 +1,12 @@
+.c-red{
+    color:#f00 !important;
+}
+
 #projectDetailPage {
     display: none;
+}
+#projectList{
+    padding:10px 0;
 }
 #projectList > li {
     float: left;
@@ -8,6 +15,7 @@
     text-align: center;
     border: 1px solid transparent;
     padding: 8px;
+    margin:0 0 10px;
 }
 #projectList > li:hover {
     border: 1px solid #e8e8e8;
@@ -20,7 +28,9 @@
 }
 .projectName {
     font-weight: bold;
-    height: 2em;
+    height: 2.5em;
+    line-height:1.4;
+    padding:0 0 8px;
 }
 .projectImage {
     width: 120px;
@@ -29,6 +39,7 @@
     width: 100%;
     height: 120px;
     text-align: center;
+    overflow: hidden;
 }
 .projectDescription {
     height: 3em;
@@ -70,4 +81,22 @@
 #projectDetailPage h1 {
     font-size: 20px;
     margin: 8px 0;
+}
+
+
+#projectListArea{
+    margin:0 auto;
+    max-width:900px;
+    min-width:180px;
+}
+#projectListHeader{
+    padding:15px 10px;
+    background:#f6f6f6;
+    border-bottom:2px solid #e6e6e6;
+}
+#projectListHeader h1{
+    margin:0 auto;
+    max-width:900px;
+    min-width:180px;
+    font-size:1.5em;
 }
