@@ -96,13 +96,7 @@ google.setOnLoadCallback(function() {
         for (var i = 0; i < projects.length; i++) {
             var project = projects[i];
             // Add row to projects list
-            $.tmpl(projectListItemTemplate, {
-                name: project.name,
-                description: project.description,
-                url: project.url,
-                leader: project.leader,
-                leaderLink: project.leaderLink,
-                image: project.image,
+            var projectClone = $.extend({}, project, {
                 encodeURIComponent: encodeURIComponent,
                 truncate: function(str, len) {
                     if (str.length > len) {
@@ -110,7 +104,8 @@ google.setOnLoadCallback(function() {
                     }
                     return str;
                 }
-            }).appendTo(projectList);
+            });
+            $.tmpl(projectListItemTemplate, projectClone).appendTo(projectList);
         }
     }
     function convertTable2Projects(table) {
