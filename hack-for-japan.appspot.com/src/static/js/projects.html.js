@@ -1,4 +1,5 @@
 google.load('visualization', '1');
+
 google.setOnLoadCallback(function() {
     var ProjectProperties = {
         NAME: 0,
@@ -20,12 +21,63 @@ google.setOnLoadCallback(function() {
     };
     var NO_IMAGE_URL = "images/noImage.jpg";
     var PROJECTS_DATASOURCE_URL = "https://spreadsheets.google.com/spreadsheet/ccc?key=0Avz5Dw63IZCSdGlfUlJhUmRoX19hZ2xTODYteXdGUVE#gid=0";
-//        "https://spreadsheets.google.com/spreadsheet/ccc?key=0Amb6cvTCzTQRdFJzQWswd1NrVWk0d0NCWnhPSklUdXc&hl=en_US";
+    //        "https://spreadsheets.google.com/spreadsheet/ccc?key=0Amb6cvTCzTQRdFJzQWswd1NrVWk0d0NCWnhPSklUdXc&hl=en_US";
     var projectListItemTemplate = $("#projectListItemTemplate").template();
     var projectDetailPageTemplate = $("#projectDetailPageTemplate").template();
     var PROJECT_ID_PREFIX = "project_";
-    var data;
-    
+    var projects = [];
+    $("#sort").change(function() {
+        var option = this.options[this.selectedIndex];
+        switch (option.value) {
+        case "status":
+            sortByStatus();
+            break;
+        case "lastModified":
+            sortByLastModified();
+            break;
+        default:
+            renderIndexOfProjects(projects);
+        }
+    });
+    function sortByLastModified() {
+        var cloneProjects = projects.concat([]);
+        cloneProjects.sort(function(a, b) {
+            var dateA = string2Time(a.lastModified);
+            var dateB = string2Time(b.lastModified);
+            return dateB - dateA;
+        });
+        renderIndexOfProjects(cloneProjects);
+    }
+    function string2Time(s) {
+        if (!s) {
+            return -Infinity;
+        }
+        var tokens = s.split("/");
+        var month = parseInt(tokens[0], 10);
+        var date = parseInt(tokens[1], 10);
+        var year = parseInt(tokens[2], 10);
+        return new Date(year, month - 1, date).getTime();
+    }
+    function sortByStatus() {
+        var active = [];
+        var nonactive = [];
+        var dead = [];
+        for (var i = 0; i < projects.length; i++) {
+            var project = projects[i];
+            switch (project.status) {
+            case "活動中":
+                active.push(project);
+                break;
+            case "活動停止中":
+                nonactive.push(project);
+                break;
+            default:
+                dead.push(project);
+                break;
+            }
+        }
+        renderIndexOfProjects(active.concat(nonactive.concat(dead)));
+    }
     function init(callback) {
         var query = new google.visualization.Query(PROJECTS_DATASOURCE_URL);
         query.setQuery("select * where A <> '' offset 1");
@@ -34,60 +86,80 @@ google.setOnLoadCallback(function() {
                 alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
                 return;
             }
-            data = response.getDataTable();
-            var rowCount = data.getNumberOfRows();
-            var colCount = data.getNumberOfColumns();
-            
-            var projectList = $("<ul id='projectList'/>").appendTo($("#projectListArea").empty());
-            for (var i = 0; i < rowCount; i++) {
-                var name = data.getFormattedValue(i, ProjectProperties.NAME);
-                var description = data.getFormattedValue(i, ProjectProperties.DESCRIPTION);
-                var url = data.getFormattedValue(i, ProjectProperties.URL);
-                var leader = data.getFormattedValue(i, ProjectProperties.LEADER);
-                var image = data.getFormattedValue(i, ProjectProperties.IMAGE);
-                var leaderLink = null;
-                // mail address
-                if (leader.match(/^[A-Za-z0-9]+[\w-]+@[\w\.-]+\.\w{2,}$/)) {
-                    leaderLink = "mailto:" + encodeURIComponent(leader);
-                }
-                // twitter (may be)
-                else if (leader.charAt(0) == "@") {
-                    leaderLink = "http://twitter.com/" + encodeURIComponent(leader.substring(1));
-                }
-                // HTTP URL
-                else if (leader.match(/^http\:\/\/[\w\.-]+$/)) {
-                    leaderLink = leader;
-                }
-                image = image || NO_IMAGE_URL;
-                // Add row to projects list
-                $.tmpl(projectListItemTemplate, {
-                    name: name,
-                    description: description,
-                    url: url,
-                    leader: leader,
-                    leaderLink: leaderLink,
-                    encodeURIComponent: encodeURIComponent,
-                    image: image,
-                    truncate: function(str, len) {
-                        if (str.length > len) {
-                            return str.substring(0, len - 3) + "...";
-                        }
-                        return str;
-                    }
-                }).appendTo(projectList);
-            }
+            convertTable2Projects(response.getDataTable());
+            renderIndexOfProjects(projects);
             callback();
         });
     }
-    function findProjectIndex(projectName) {
-        var rowCount = data.getNumberOfRows();
+    function renderIndexOfProjects(projects) {
+        var projectList = $("<ul id='projectList'/>").appendTo($("#projectListArea").empty());
+        for (var i = 0; i < projects.length; i++) {
+            var project = projects[i];
+            // Add row to projects list
+            $.tmpl(projectListItemTemplate, {
+                name: project.name,
+                description: project.description,
+                url: project.url,
+                leader: project.leader,
+                leaderLink: project.leaderLink,
+                image: project.image,
+                encodeURIComponent: encodeURIComponent,
+                truncate: function(str, len) {
+                    if (str.length > len) {
+                        return str.substring(0, len - 3) + "...";
+                    }
+                    return str;
+                }
+            }).appendTo(projectList);
+        }
+    }
+    function convertTable2Projects(table) {
+        var rowCount = table.getNumberOfRows();
         for (var i = 0; i < rowCount; i++) {
-            var name = data.getFormattedValue(i, ProjectProperties.NAME);
-            if (projectName === name) {
-                return i;
+            var project = {
+                name: table.getFormattedValue(i, ProjectProperties.NAME),
+                description: table.getFormattedValue(i, ProjectProperties.DESCRIPTION),
+                url: table.getFormattedValue(i, ProjectProperties.URL),
+                leader: table.getFormattedValue(i, ProjectProperties.LEADER),
+                members: table.getFormattedValue(i, ProjectProperties.MEMBERS),
+                skills: table.getFormattedValue(i, ProjectProperties.SKILLS),
+                hotToJoin: table.getFormattedValue(i, ProjectProperties.HOW_TO_JOIN),
+                place: table.getFormattedValue(i, ProjectProperties.PLACE),
+                moderatorURL: table.getFormattedValue(i, ProjectProperties.MODERATOR_URL),
+                discussionURL: table.getFormattedValue(i, ProjectProperties.DISCUSSION_URL),
+                status: table.getFormattedValue(i, ProjectProperties.STATUS),
+                license: table.getFormattedValue(i, ProjectProperties.LICENSE),
+                lastModified: table.getFormattedValue(i, ProjectProperties.LAST_MODIFIED),
+                comment: table.getFormattedValue(i, ProjectProperties.COMMENT),
+                image: table.getFormattedValue(i, ProjectProperties.IMAGE) || NO_IMAGE_URL
+            };
+            var leader = table.getFormattedValue(i, ProjectProperties.LEADER);
+            var image = table.getFormattedValue(i, ProjectProperties.IMAGE);
+
+            // mail address
+            if (leader.match(/^[A-Za-z0-9]+[\w-]+@[\w\.-]+\.\w{2,}$/)) {
+                project.leaderLink = "mailto:" + encodeURIComponent(leader);
+            }
+            // twitter (may be)
+            else if (leader.charAt(0) == "@") {
+                project.leaderLink = "http://twitter.com/" + encodeURIComponent(leader.substring(1));
+            }
+            // HTTP URL
+            else if (leader.match(/^http\:\/\/[\w\.-]+$/)) {
+                project.leaderLink = leader;
+            }
+            project.image = image || NO_IMAGE_URL;
+
+            projects.push(project);
+        }
+    }
+    function findProjectByName(projectName) {
+        for (var i = 0, n = projects.length; i < n; i++) {
+            if (projectName === projects[i].name) {
+                return projects[i];
             }
         }
-        return -1;
+        return null;
     }
     function renderDetailPage() {
         var projectName = location.hash;
@@ -100,27 +172,10 @@ google.setOnLoadCallback(function() {
         }
         projectName = projectName.substring(PROJECT_ID_PREFIX.length + 1);
         projectName = decodeURIComponent(projectName);
-        var index = findProjectIndex(projectName);
-        var tmplParams = {
-            name: data.getFormattedValue(index, ProjectProperties.NAME),
-            description: data.getFormattedValue(index, ProjectProperties.DESCRIPTION),
-            url: data.getFormattedValue(index, ProjectProperties.URL),
-            leader: data.getFormattedValue(index, ProjectProperties.LEADER),
-            members: data.getFormattedValue(index, ProjectProperties.MEMBERS),
-            skills: data.getFormattedValue(index, ProjectProperties.SKILLS),
-            hotToJoin: data.getFormattedValue(index, ProjectProperties.HOW_TO_JOIN),
-            place: data.getFormattedValue(index, ProjectProperties.PLACE),
-            moderatorURL: data.getFormattedValue(index, ProjectProperties.MODERATOR_URL),
-            descussionURL: data.getFormattedValue(index, ProjectProperties.DISCUSSION_URL),
-            status: data.getFormattedValue(index, ProjectProperties.STATUS),
-//            license: data.getFormattedValue(index, ProjectProperties.LICENSE),
-//            lastModified: data.getFormattedValue(index, ProjectProperties.LAST_MODIFIED),
-//            comment: data.getFormattedValue(index, ProjectProperties.COMMENT),
-            image: data.getFormattedValue(index, ProjectProperties.IMAGE) || NO_IMAGE_URL
-        };
+        var project = findProjectByName(projectName);
         $("#projectListPage").fadeOut();
         $("#projectDetailPageContent").empty().append(
-            $.tmpl(projectDetailPageTemplate, tmplParams));
+            $.tmpl(projectDetailPageTemplate, project));
         // Google +1
         gapi.plusone.render("plusoneButton", {
             size: "small",
