@@ -1,4 +1,3 @@
-file://localhost/Users/shumpei/Dropbox/hack4jp/tmp/h4jp-staff/hack-for-japan.appspot.com/src/static/shumpei.shiraishi@gmail.com
 google.load('visualization', '1');
 google.setOnLoadCallback(function() {
     var ProjectProperties = {
