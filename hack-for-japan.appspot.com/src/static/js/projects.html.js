@@ -1,3 +1,4 @@
+file://localhost/Users/shumpei/Dropbox/hack4jp/tmp/h4jp-staff/hack-for-japan.appspot.com/src/static/shumpei.shiraishi@gmail.com
 google.load('visualization', '1');
 google.setOnLoadCallback(function() {
     var ProjectProperties = {
@@ -12,14 +13,15 @@ google.setOnLoadCallback(function() {
         MODERATOR_URL: 8,
         DISCUSSION_URL: 9,
         STATUS: 10,
-        LICENSE: 11,
-        LAST_MODIFIED: 12,
-        COMMENT: 13,
-        IMAGE: 14
+        LICENSE: 14,
+        LAST_MODIFIED: 15,
+        COMMENT: 16,
+        IMAGE: 17,
+        MAIL_ADDRESS: 18
     };
     var NO_IMAGE_URL = "images/noImage.jpg";
-    var PROJECTS_DATASOURCE_URL =
-        "https://spreadsheets.google.com/spreadsheet/ccc?key=0Amb6cvTCzTQRdFJzQWswd1NrVWk0d0NCWnhPSklUdXc&hl=en_US";
+    var PROJECTS_DATASOURCE_URL = "https://spreadsheets.google.com/spreadsheet/ccc?key=0Avz5Dw63IZCSdGlfUlJhUmRoX19hZ2xTODYteXdGUVE#gid=0";
+//        "https://spreadsheets.google.com/spreadsheet/ccc?key=0Amb6cvTCzTQRdFJzQWswd1NrVWk0d0NCWnhPSklUdXc&hl=en_US";
     var projectListItemTemplate = $("#projectListItemTemplate").template();
     var projectDetailPageTemplate = $("#projectDetailPageTemplate").template();
     var PROJECT_ID_PREFIX = "project_";
@@ -43,7 +45,7 @@ google.setOnLoadCallback(function() {
                 var description = data.getFormattedValue(i, ProjectProperties.DESCRIPTION);
                 var url = data.getFormattedValue(i, ProjectProperties.URL);
                 var leader = data.getFormattedValue(i, ProjectProperties.LEADER);
-                var image = data.getFormattedValue(i, data.getNumberOfColumns() - 1);
+                var image = data.getFormattedValue(i, ProjectProperties.IMAGE);
                 var leaderLink = null;
                 // mail address
                 if (leader.match(/^[A-Za-z0-9]+[\w-]+@[\w\.-]+\.\w{2,}$/)) {
@@ -115,7 +117,7 @@ google.setOnLoadCallback(function() {
 //            license: data.getFormattedValue(index, ProjectProperties.LICENSE),
 //            lastModified: data.getFormattedValue(index, ProjectProperties.LAST_MODIFIED),
 //            comment: data.getFormattedValue(index, ProjectProperties.COMMENT),
-            image: data.getFormattedValue(index, data.getNumberOfColumns() - 1) || NO_IMAGE_URL
+            image: data.getFormattedValue(index, ProjectProperties.IMAGE) || NO_IMAGE_URL
         };
         $("#projectListPage").fadeOut();
         $("#projectDetailPageContent").empty().append(
